@@ -1,5 +1,6 @@
 from __future__ import annotations
-
+from models.base import Atributos
+from models.personagem import Personagem
 
 class Jogo:
     """
@@ -12,12 +13,40 @@ class Jogo:
             "nome": None,
             "arquetipo": None,   # ex.: "Guerreiro", "Mago" (placeholder textual)
         }
+
+        self._personagem_obj: Personagem | None = None
+
         self.missao_config = {
             "dificuldade": "Fácil",  # Fácil | Média | Difícil
             "cenario": "Trilha",     # rótulo ilustrativo
         }
         self._ultimo_save = None
         self._ultimo_load = None
+
+    def _obter_atributos_por_arquetipo(self, arquetipo: str) -> Atributos | None:
+        """Retorna a instância de Atributos específica para o arquétipo."""
+        
+        # Mapeamento dos conjuntos de atributos
+        mapa_atributos = {
+            "Guerreiro": Atributos(
+                vida=150, ataque=30, defesa=10, 
+                crit_chance=15, crit_dmg=150, 
+                mana=50, mana_regen=5, special_cost=25
+            ),
+            "Mago": Atributos(
+                vida=100, ataque=40, defesa=5, 
+                crit_chance=10, crit_dmg=200, 
+                mana=80, mana_regen=10, special_cost=40
+            ),
+            "Arqueiro": Atributos(
+                vida=120, ataque=35, defesa=8, 
+                crit_chance=25, crit_dmg=120, 
+                mana=40, mana_regen=4, special_cost=25
+            )
+        }
+        
+        # Retorna a instância de Atributos ou None se não encontrado
+        return mapa_atributos.get(arquetipo)
 
     def menu_criar_personagem(self) -> None:
         while True:
@@ -82,9 +111,24 @@ class Jogo:
         if not self.personagem["arquetipo"]:
             print("Escolha um arquétipo antes de confirmar a criação.")
             return
-        print("\nPersonagem criado com sucesso!")
-        print(f"Nome: {self.personagem['nome']} | Arquétipo: {self.personagem['arquetipo']}")
-        print("(Obs.: criação ilustrativa; sem atributos ainda.)")
+        
+        arq = self.personagem["arquetipo"]
+        atributos = self._obter_atributos_por_arquetipo(arq)
+        
+        if atributos:
+            # 1. Cria a instância do Personagem (objeto real)
+            novo_personagem = Personagem(self.personagem["nome"], atributos)
+            
+            # 2. Armazena o personagem no estado do jogo
+            self._personagem_obj = novo_personagem 
+            
+            print("\nPersonagem criado com sucesso!")
+            print(f"Nome: {novo_personagem.nome} | Arquétipo: {arq}")
+            print(f"ATK: {atributos.ataque} | DEF: {atributos.defesa} | HP: {atributos.vida}")
+            print(f"Vida Máxima Real: {novo_personagem._atrib.vida_max}")
+            
+        else:
+            print(f"Erro: Arquétipo '{arq}' não possui atributos definidos.")
 
     def _ajuda_criar_personagem(self) -> None:
         print("\nAjuda — Criar Personagem")
