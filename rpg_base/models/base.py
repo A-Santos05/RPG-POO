@@ -12,6 +12,7 @@ class Atributos:
     mana: int = 0
     mana_regen: int = 0
     special_cost: int = 0
+    recompensa_xp: int = 0
     vida_max: int | None = None
 
 class Entidade:
