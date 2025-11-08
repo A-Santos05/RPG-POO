@@ -32,17 +32,17 @@ class Jogo:
         # Mapeamento dos conjuntos de atributos
         mapa_atributos = {
             "Guerreiro": Atributos(
-                vida=150, ataque=30, defesa=10, 
-                crit_chance=15, crit_dmg=150, 
-                mana=50, mana_regen=5, special_cost=25
+                ataque=20, vida=100, defesa=40, 
+                crit_chance=35, crit_dmg=50, 
+                mana=30, mana_regen=3, special_cost=25
             ),
             "Mago": Atributos(
-                vida=100, ataque=40, defesa=5, 
+                ataque=40, vida=100, defesa=5, 
                 crit_chance=10, crit_dmg=200, 
-                mana=80, mana_regen=10, special_cost=40
+                mana=80, mana_regen=10, special_cost=25
             ),
             "Arqueiro": Atributos(
-                vida=120, ataque=35, defesa=8, 
+                ataque=35, vida=100, defesa=8, 
                 crit_chance=25, crit_dmg=120, 
                 mana=40, mana_regen=4, special_cost=25
             )
@@ -247,9 +247,9 @@ class Jogo:
         # Mapeamento de todos os métodos de criação disponíveis
         # Estes são os métodos de classe que retornam uma instância de Inimigo
         metodos_fabrica = [
-            Inimigo.goblin_normal,
-            Inimigo.goblin_arqueiro,
-            Inimigo.goblin_mago,
+            Inimigo.GoblinNormal,
+            Inimigo.GoblinArqueiro,
+            Inimigo.GoblinEscudeiro,
             # Adicione outros métodos de fábrica da classe Inimigo aqui se houver
         ]
             

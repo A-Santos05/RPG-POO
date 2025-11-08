@@ -18,6 +18,7 @@ class Inimigo(Entidade):
         variacao = random.randint(-2, 2)  # Variação simples de dano pra mais ou pra menos
         dano_final = max(1, dano_base + variacao)
         print(f"{self.nome} ataca! Dano causado: {dano_final}") # É necessário?
+        self.receber_dano(dano_final) # É necessário?
         return dano_final
     
     def receber_dano(self, dano: int) -> int:
@@ -26,10 +27,10 @@ class Inimigo(Entidade):
     # Pendente definir metodo e recber dano/defesa e sobrepor o metodo receber dano da classe Entidade
     
     """Definições de atributos para inimigos específicos"""
-    @classmethod
 
-    def GoblinNormal(cls) -> Atributos:
-       return Atributos(
+    @classmethod
+    def GoblinNormal(cls) -> Inimigo:
+       return cls(
         nome = "Goblin Normal",
         vida = 100,
         ataque = 5,
@@ -37,33 +38,35 @@ class Inimigo(Entidade):
         recompensa_xp = 0 # definir recompensa de xp futura
     )
     
-    def GoblinArqueiro(cls) -> Atributos:
-        return Atributos(
+    @classmethod
+    def GoblinArqueiro(cls) -> Inimigo:
+        return cls(
         nome = "Goblin Arqueiro",
         ataque = 10,
         defesa = 10,
         vida = 100,
         recompensa_xp = 0 # definir recompensa de xp futura
     )
-
-    def GoblinMago(cls) -> Atributos:
-        return Atributos(
+    """
+    def GoblinMago(cls) -> Inimigo:
+        return cls(
         nome = "Goblin Mago",
        # ataque = implementar ataque mágico futuramente (ataque de dano verdadeiro)
         defesa  = 15,
         vida = 100, # podendo diminuir a vida com base no ataque mágico em definição
         recompensa_xp = 0# definir recompensa de xp futura
     )
-
-    def GoblinEscudeiro(cls) -> Atributos:
-        return Atributos(
+    """
+    @classmethod
+    def GoblinEscudeiro(cls) -> Inimigo:
+        return cls(
         nome = "Goblin Escudeiro",
         ataque = 3,
         vida = 100,
         defesa = 20,
         recompensa_xp = 0 # definir recompensa de xp futura
     )
-    # atributos_GoblinGrandao = Atributos(
+    # atributos_GoblinGrandao = Inimigo(
     #     nome = "Goblin Grandão",
     #     ataque = # em definição
     #     defesa = # em definição

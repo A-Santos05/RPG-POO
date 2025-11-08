@@ -1,5 +1,6 @@
 from __future__ import annotations
 from dataclasses import dataclass
+import math
 
 @dataclass
 class Atributos:
@@ -38,7 +39,7 @@ class Entidade:
 
     def receber_dano(self, dano: int) -> int:
         """Dano efetivo simples (placeholder)."""
-        efetivo = max(0, dano - self._atrib.defesa)
+        efetivo = max(1, dano - math.ceil(dano * (self._atrib.defesa / 100)))
         self._atrib.vida = max(0, self._atrib.vida - efetivo)
         return efetivo
 
@@ -47,4 +48,4 @@ class Entidade:
         v = max(0, self._atrib.vida)
         vmax = max(1, self._atrib.vida_max)
         cheio = int(largura * v / vmax)
-        return "[" + "#" * cheio + "-" * (largura - cheio) + f"] {v}/{vmax} HP"
+        return "[" + " ❤️ " * cheio + " ♡ " * (largura - cheio) + f"] {v}/{vmax} HP"

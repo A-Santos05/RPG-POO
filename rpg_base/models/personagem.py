@@ -19,13 +19,13 @@ class Personagem(Entidade):
         Implementação simples: Ataque base + aleatoriedade, ignorando crítico por enquanto.
         """
         # Vamos simular um dano que varia entre 80% e 120% do ATK base
-        dano_min = int(self._atrib.ataque * 0.8)
-        dano_max = int(self._atrib.ataque * 1.2)
+        #dano_min = int(self._atrib.ataque * 0.8)
+        #dano_max = int(self._atrib.ataque * 1.2)
         
         # O dano real que será usado como entrada para o 'receber_dano' do Inimigo
-        dano_base = random.randint(dano_min, dano_max)
-        
-        return dano_base
+        #dano_base = random.randint(dano_min, dano_max)
+        dano_base = self._atrib.ataque  # Implementação simplificada inicial
+        return dano_base 
 
     def habilidade_especial(self) -> int:
         """
