@@ -1,6 +1,9 @@
 from __future__ import annotations
 from models.base import Atributos
 from models.personagem import Personagem
+from models.inimigo import Inimigo
+from models.missao import Missao, ResultadoMissao
+import random
 
 class Jogo:
     """
@@ -156,7 +159,7 @@ class Jogo:
             elif op == "3":
                 self._preview_missao()
             elif op == "4":
-                self._iniciar_missao_placeholder()
+                self._iniciar_missao_teste()
             elif op == "9":
                 self._ajuda_missao()
             elif op == "0":
@@ -207,6 +210,57 @@ class Jogo:
         print("\nIniciando missão...")
         print("(Placeholder) Combate e lógica de jogo serão implementados futuramente.")
         print("Missão finalizada (simulado). Retornando ao menu de Missão...")
+
+    def _iniciar_missao_teste(self) -> None:
+        """
+        Método de teste para iniciar a missão com um inimigo aleatório.
+        """
+        if not self._personagem_obj:
+            print("Crie um personagem antes de iniciar uma missão.")
+            return
+
+        # 1. Gera o Inimigo de Teste (aleatoriamente)
+        inimigo_da_vez = self._gerar_inimigo_aleatorio()
+
+        # 2. Cria a Missão
+        missao_teste = Missao(
+            titulo=f"Encontro na {self.missao_config['cenario']}",
+            inimigo=inimigo_da_vez
+        )
+
+        # 3. Executa a Missão (necessita da implementação de combate)
+        print("Iniciando combate...")
+        resultado: ResultadoMissao = missao_teste.executar(self._personagem_obj)
+
+        # 4. Exibe o resultado
+        print(f"\n--- Resultado da Missão ---")
+        print(f"Status: {'VITÓRIA!' if resultado.venceu else 'DERROTA!'}")
+        print(f"Detalhes: {resultado.detalhes}")
+        
+
+    def _gerar_inimigo_aleatorio(self) -> Inimigo:
+        """
+        Gera e retorna uma instância aleatória de Inimigo chamando um método de fábrica.
+        Desconsidera a dificuldade por enquanto.
+        """
+        
+        # Mapeamento de todos os métodos de criação disponíveis
+        # Estes são os métodos de classe que retornam uma instância de Inimigo
+        metodos_fabrica = [
+            Inimigo.goblin_normal,
+            Inimigo.goblin_arqueiro,
+            Inimigo.goblin_mago,
+            # Adicione outros métodos de fábrica da classe Inimigo aqui se houver
+        ]
+            
+        # 1. Escolhe um MÉTODO aleatoriamente
+        metodo_escolhido = random.choice(metodos_fabrica)
+        
+        # 2. Executa o método para instanciar o objeto (ex.: Inimigo.goblin_normal())
+        inimigo_instancia = metodo_escolhido()
+        
+        print(f"Inimigo gerado: {inimigo_instancia.nome}")
+        return inimigo_instancia
 
     def _ajuda_missao(self) -> None:
         print("\nAjuda — Missão")

@@ -7,11 +7,11 @@ class Atributos:
     vida: int
     ataque: int
     defesa: int
-    crit_chance: int
-    crit_dmg: int
-    mana: int
-    mana_regen: int
-    special_cost: int
+    crit_chance: int = 0
+    crit_dmg: int = 100
+    mana: int = 0
+    mana_regen: int = 0
+    special_cost: int = 0
     vida_max: int | None = None
 
 class Entidade:
