@@ -2,7 +2,6 @@ from __future__ import annotations
 from .base import Entidade, Atributos
 import random
 
-
 class Personagem(Entidade):
     """
     Classe base única do jogador.
@@ -24,8 +23,14 @@ class Personagem(Entidade):
         
         # O dano real que será usado como entrada para o 'receber_dano' do Inimigo
         #dano_base = random.randint(dano_min, dano_max)
+        dano_critico = random.random() * 100 < self._atrib.crit_chance
         dano_base = self._atrib.ataque  # Implementação simplificada inicial
-        return dano_base 
+        dano_final = dano_base
+        if dano_critico:
+            multiplicador_critico = self._atrib.crit_dmg / 100
+            dano_final = int(dano_base * multiplicador_critico)
+            print(f"{self.nome} acerta um crítico!")
+        return dano_final
 
     def habilidade_especial(self) -> int:
         """
