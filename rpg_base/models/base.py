@@ -51,3 +51,4 @@ class Entidade:
         vmax = max(1, self._atrib.vida_max)
         cheio = int(largura * v / vmax)
         return "[" + " ❤️ " * cheio + " ♡ " * (largura - cheio) + f"] {v}/{vmax} HP"
+
