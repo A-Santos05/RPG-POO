@@ -1,6 +1,6 @@
 from __future__ import annotations
 from .base import Entidade, Atributos, Item
-from typing import Dict, Any, Optional
+from typing import Dict, Optional, Union, Tuple
 import math
 import random
 
@@ -24,8 +24,34 @@ class Inimigo(Entidade):
         dano_final = max(1, dano_base + variacao)
         return dano_final
     
-    def receber_dano(self, dano: int) -> int:
-        return super().receber_dano(dano)
+    def receber_dano(self, dano: Union[int, Tuple[int, int]]) -> int:
+        """
+        Recebe dano. Se for uma tupla, processa dano normal e verdadeiro.
+        Tupla esperada: (dano_normal, dano_verdadeiro)
+        """
+        dano_total_recebido = 0
+
+        if isinstance(dano, tuple):
+            dano_normal, dano_verdadeiro = dano
+            
+            # 1. Cálculo do Dano Normal (reduzido pela defesa da Entidade)
+            dano_reduzido = max(1, dano_normal - math.ceil(dano_normal * (self._atrib.defesa / 100)))
+            
+            # 2. Cálculo do Dano Verdadeiro (não reduzido)
+            # O dano verdadeiro é aplicado diretamente
+            
+            dano_total_recebido = dano_reduzido + dano_verdadeiro
+            
+            print(f"(Dano Normal: {dano_normal} -> {dano_reduzido} | Dano Verdadeiro: {dano_verdadeiro})")
+
+        else:
+            # Comportamento antigo, se for apenas um inteiro (usado pelo Inimigo atacando o Personagem)
+            dano_total_recebido = super().receber_dano(dano)
+            return dano_total_recebido # Já atualiza a vida em Entidade.receber_dano
+
+        # Aplica o dano total à vida do inimigo
+        self._atrib.vida = max(0, self._atrib.vida - dano_total_recebido)
+        return dano_total_recebido
 
     # Pendente definir metodo e recber dano/defesa e sobrepor o metodo receber dano da classe Entidade
     

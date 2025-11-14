@@ -48,10 +48,11 @@ class Missao:
             # 1. PERSONAGEM ATACA INIMIGO
             # Chamada ao método que você deve implementar em Personagem
             try:
-                dano_personagem = p.calcular_dano_base() 
+                # O Personagem.calcular_dano_base() agora retorna (dano_normal, dano_verdadeiro)
+                dano_personagem_tuple = p.calcular_dano_base() 
                 
-                # Chamada ao método de Entidade para cálculo de dano
-                dano_recebido_inimigo = i.receber_dano(dano_personagem)
+                # Chamada ao método de Entidade/Inimigo para cálculo de dano
+                dano_recebido_inimigo = i.receber_dano(dano_personagem_tuple)
                 
                 if p._atrib.mana < p._atrib.mana_pool:#Calculo de regeneração de mana
                     if p._atrib.mana + p._atrib.mana_regen > p._atrib.mana_pool:
@@ -78,6 +79,7 @@ class Missao:
             
             # Usamos o método 'atacar' da classe Entidade (método base simples)
             dano_inimigo = i.atacar()
+            # O Personagem.receber_dano (que herda de Entidade) ainda espera um 'int' de dano normal
             dano_recebido_personagem = p.receber_dano(dano_inimigo)
             
             print(f"{i.nome} revida! {p.nome} recebe {dano_recebido_personagem} de dano.")
@@ -106,10 +108,10 @@ class Missao:
             xp_ganho = i.xp_drop # Pega o XP que o inimigo dropa (definido em Inimigo)
             p.ganhar_xp(xp_ganho)
             # Lógica de XP/Recompensa aqui
-            
+
             if i.item_drop:
                 p.coletar_item(i.item_drop)
-            
+
             return ResultadoMissao(venceu=True, detalhes=f"{p.nome} derrotou {i.nome}.")
         else:
             print(f"{p.nome} falhou na missão {self.titulo}.")

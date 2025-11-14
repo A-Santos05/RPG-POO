@@ -46,9 +46,9 @@ class Jogo:
             },
             "Mago":{
                 "atributos_base": Atributos(
-                    ataque=40, vida=100, defesa=5, 
-                    crit_chance=10, crit_dmg=200, 
-                    mana=0,mana_pool=60, mana_regen=10, special_cost=25
+                    ataque=40, vida=100, defesa=3, 
+                    crit_chance=5, crit_dmg=200, 
+                    mana=0,mana_pool=60, mana_regen=10, special_cost=25, dano_verdadeiro_perc=25
                     ),
                 "taxas_crescimento": {
                     "ataque": 4,
@@ -103,8 +103,12 @@ class Jogo:
     def _definir_nome(self) -> None:
         nome = input("Digite o nome do personagem: ").strip()
         if nome:
-            self.personagem["nome"] = nome
-            print(f"Nome definido: {nome}")
+            if nome == "Cleiton":
+                self.personagem["nome"] = "Cleiton Rasta"
+                print(f"Nome definido: {nome}")
+            else:
+                self.personagem["nome"] = nome
+                print(f"Nome definido: {nome}")
         else:
             print("Nome não alterado.")
 

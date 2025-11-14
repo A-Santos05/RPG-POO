@@ -47,24 +47,26 @@ class Personagem(Entidade):
             print(f"Item {item_a_usar.nome} é do tipo {item_a_usar.tipo} e não pode ser usado no momento.")
             return False
 
-    def calcular_dano_base(self) -> int:
+    def calcular_dano_base(self) -> tuple[int, int]:
         """
-        Implementação simples: Ataque base + aleatoriedade, ignorando crítico por enquanto.
+        Implementação: Calcula dano normal (reduzido pela defesa) e dano verdadeiro (ignora defesa).
+        Retorna: (dano_normal, dano_verdadeiro)
         """
-        # Vamos simular um dano que varia entre 80% e 120% do ATK base
-        #dano_min = int(self._atrib.ataque * 0.8)
-        #dano_max = int(self._atrib.ataque * 1.2)
-        
-        # O dano real que será usado como entrada para o 'receber_dano' do Inimigo
-        #dano_base = random.randint(dano_min, dano_max)
         dano_critico = random.random() * 100 < self._atrib.crit_chance
-        dano_base = self._atrib.ataque  # Implementação simplificada inicial
+        dano_base = self._atrib.ataque
+        
+        # 1. Calcula o dano base final, aplicando o crítico se necessário
         dano_final = dano_base
         if dano_critico:
             multiplicador_critico = self._atrib.crit_dmg / 100
             dano_final = int(dano_base * multiplicador_critico)
             print(f"{self.nome} acerta um crítico!")
-        return dano_final
+
+        # 2. Divide o dano final em Dano Verdadeiro e Dano Normal
+        dano_verdadeiro = int(dano_final * (self._atrib.dano_verdadeiro_perc / 100))
+        dano_normal = dano_final - dano_verdadeiro
+        
+        return dano_normal, dano_verdadeiro
 
     def habilidade_especial(self) -> int:
         """

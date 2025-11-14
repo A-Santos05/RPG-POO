@@ -17,6 +17,7 @@ class Atributos:
     vida: int
     ataque: int
     defesa: int
+    dano_verdadeiro_perc: int = 0
     crit_chance: int = 0
     crit_dmg: int = 100
     mana: int = 0
