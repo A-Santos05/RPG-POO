@@ -106,6 +106,10 @@ class Missao:
             xp_ganho = i.xp_drop # Pega o XP que o inimigo dropa (definido em Inimigo)
             p.ganhar_xp(xp_ganho)
             # Lógica de XP/Recompensa aqui
+            
+            if i.item_drop:
+                p.coletar_item(i.item_drop)
+            
             return ResultadoMissao(venceu=True, detalhes=f"{p.nome} derrotou {i.nome}.")
         else:
             print(f"{p.nome} falhou na missão {self.titulo}.")

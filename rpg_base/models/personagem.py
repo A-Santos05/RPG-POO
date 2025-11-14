@@ -1,6 +1,7 @@
 from __future__ import annotations
-from .base import Entidade, Atributos
+from .base import Entidade, Atributos, Item
 import random
+from typing import List
 
 class Personagem(Entidade):
     """
@@ -13,6 +14,38 @@ class Personagem(Entidade):
         self.nivel = 1
         self.xp = 0
         self._taxas_crescimento = taxas_crescimento # Armazena as taxas
+        self.inventario: List[Item] = []
+
+    def coletar_item(self, item: Item) -> None:
+        """Adiciona um item ao inventário."""
+        print(f"{self.nome} COLETADO: {item.nome}!")
+        self.inventario.append(item)
+
+    def usar_item(self, nome_item: str) -> bool:
+        """Usa um item do inventário, aplicando seu efeito."""
+        
+        # Encontra o item, ignorando maiúsculas/minúsculas
+        item_a_usar = next((item for item in self.inventario if item.nome.lower() == nome_item.lower()), None)
+        
+        if not item_a_usar:
+            print(f"Item '{nome_item}' não encontrado.")
+            return False
+            
+        if item_a_usar.tipo == "Consumível":
+            if item_a_usar.efeito_atributo == "vida":
+                # Lógica de cura
+                cura = item_a_usar.efeito_quant
+                self._atrib.vida = min(self._atrib.vida_max, self._atrib.vida + cura)
+                print(f"\nUsou {item_a_usar.nome}. Curou {cura} HP.")
+                print(f"HP atual: {self._atrib.vida}/{self._atrib.vida_max}")
+                
+            # Remove o item do inventário (consumível)
+            self.inventario.remove(item_a_usar)
+            return True
+            
+        else:
+            print(f"Item {item_a_usar.nome} é do tipo {item_a_usar.tipo} e não pode ser usado no momento.")
+            return False
 
     def calcular_dano_base(self) -> int:
         """

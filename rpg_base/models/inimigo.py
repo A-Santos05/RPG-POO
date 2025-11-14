@@ -1,6 +1,6 @@
 from __future__ import annotations
-from .base import Entidade, Atributos
-from typing import Dict, Any
+from .base import Entidade, Atributos, Item
+from typing import Dict, Any, Optional
 import math
 import random
 
@@ -10,11 +10,12 @@ class Inimigo(Entidade):
     Sem IA/variações — apenas o contêiner para atributos básicos.
     """
 
-    def __init__(self, nome: str, vida: int, ataque: int, defesa: int, recompensa_xp: int):
+    def __init__(self, nome: str, vida: int, ataque: int, defesa: int, recompensa_xp: int, item_drop: Optional[Item] = None):
         super().__init__(nome, Atributos(
             vida=vida, ataque=ataque, defesa=defesa, vida_max=vida, recompensa_xp=recompensa_xp
         ))
         self.xp_drop = recompensa_xp
+        self.item_drop = item_drop
 
     def atacar(self) -> int: #Sobrepondo o método atacar da classe Entidade
         """Implementa um ataque simples com variação de dano."""
@@ -37,26 +38,43 @@ class Inimigo(Entidade):
         defesa_base = 10
         xp_base = 10 # definir recompensa de xp futura
 
+        drop_chance = random.random() < 0.5 
+        item_dropar = Item(
+            nome="Poção de Cura Menor", 
+            tipo="Consumível", 
+            efeito_quant=30, 
+            efeito_atributo="vida"
+        ) if drop_chance else None
+        
         return cls(
-        nome = "Goblin Normal",
-        vida = int(vida_base * multiplicadores.get("vida", 1.0)),
-        ataque = int(ataque_base * multiplicadores.get("ataque", 1.0)),
-        defesa = int(defesa_base * multiplicadores.get("defesa", 1.0)),
-        recompensa_xp = int(xp_base * multiplicadores.get("xp", 1.0))
-    )
-
+            nome = "Goblin Normal",
+            vida = int(vida_base * multiplicadores.get("vida", 1.0)),
+            ataque = int(ataque_base * multiplicadores.get("ataque", 1.0)),
+            defesa = int(defesa_base * multiplicadores.get("defesa", 1.0)),
+            item_drop = item_dropar,
+            recompensa_xp = int(xp_base * multiplicadores.get("xp", 1.0)))
+        
     @classmethod
     def GoblinArqueiro(cls, multiplicadores: Dict[str, float]) -> Inimigo:
         ataque_base = 10
         defesa_base = 10
         vida_base = 100
         xp_base = 10 # definir recompensa de xp futura
-
+        
+        drop_chance = random.random() < 0.3 
+        item_dropar = Item(
+            nome="Bandagem Simples", 
+            tipo="Consumível", 
+            efeito_quant=10, 
+            efeito_atributo="vida"
+        ) if drop_chance else None
+        
         return cls(
             nome = "Goblin Arqueiro",
             vida = int(vida_base * multiplicadores.get("vida", 1.0)),
             ataque = int(ataque_base * multiplicadores.get("ataque", 1.0)),
             defesa = int(defesa_base * multiplicadores.get("defesa", 1.0)),
+            item_drop = item_dropar,
             recompensa_xp = int(xp_base * multiplicadores.get("xp", 1.0))
         )
 
@@ -77,11 +95,20 @@ class Inimigo(Entidade):
         defesa_base = 20
         xp_base = 10 # definir recompensa de xp futura
 
+        drop_chance = random.random() < 0.7 
+        item_dropar = Item(
+            nome="Bandagem Simples", 
+            tipo="Consumível", 
+            efeito_quant=10, 
+            efeito_atributo="vida"
+        ) if drop_chance else None
+        
         return cls(
             nome = "Goblin Escudeiro",
             vida = int(vida_base * multiplicadores.get("vida", 1.0)),
             ataque = int(ataque_base * multiplicadores.get("ataque", 1.0)),
             defesa = int(defesa_base * multiplicadores.get("defesa", 1.0)),
+            item_drop = item_dropar,
             recompensa_xp = int(xp_base * multiplicadores.get("xp", 1.0))
         )
 

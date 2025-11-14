@@ -314,7 +314,64 @@ class Jogo:
         
         print(f"Inimigo gerado: {inimigo_instancia.nome}")
         return inimigo_instancia
+    
+    def menu_inventario(self) -> None:
+        if not self._personagem_obj:
+            print("Crie um personagem antes de acessar o inventário.")
+            return
 
+        p = self._personagem_obj
+        
+        while True:
+            print("\n=== Inventário ===")
+            print(f"HP Atual: {p.barra_hp(10)}")
+            
+            if not p.inventario:
+                print("Seu inventário está vazio.")
+            else:
+                contagem_itens: Dict[str, int] = {}
+                opcoes = []
+                idx = 1
+                
+                # 1. Conta a quantidade de cada item único
+                for item in p.inventario:
+                    contagem_itens[item.nome] = contagem_itens.get(item.nome, 0) + 1
+
+                print("\nItens Consumíveis:")
+                
+                # 2. Lista os itens e suas quantidades para uso
+                for nome, quant in contagem_itens.items():
+                    # Pega um item de exemplo para obter os detalhes de efeito
+                    item_exemplo = next(item for item in p.inventario if item.nome == nome)
+                    
+                    if item_exemplo.tipo == "Consumível":
+                        detalhe = f"(Cura {item_exemplo.efeito_quant} {item_exemplo.efeito_atributo.upper()})"
+                        opcoes.append(nome)
+                        print(f"[{idx}] {nome} x{quant} {detalhe}")
+                        idx += 1
+                
+                if not opcoes and p.inventario:
+                    print("Nenhum item consumível para usar.")
+                
+            print("\n[0] Voltar")
+            
+            op = input("Digite o NÚMERO do item que deseja USAR ou [0] para Voltar: ").strip()
+            
+            if op == "0":
+                break
+            elif op.isdigit():
+                try:
+                    indice = int(op) - 1
+                    if 0 <= indice < len(opcoes):
+                        nome_item_escolhido = opcoes[indice]
+                        p.usar_item(nome_item_escolhido) # Chama o método implementado em Personagem
+                    else:
+                        print("Opção inválida.")
+                except ValueError:
+                    print("Entrada inválida. Digite um número.")
+            else:
+                print("Opção inválida.")
+                
     def _ajuda_missao(self) -> None:
         print("\nAjuda — Missão")
         print("- Selecione dificuldade e cenário.")

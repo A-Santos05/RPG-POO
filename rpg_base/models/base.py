@@ -3,6 +3,15 @@ from dataclasses import dataclass
 import math
 
 @dataclass
+
+#Classe para representar um Item
+class Item:
+    nome: str
+    tipo: str # Ex: "Consumível", "Equipamento"
+    efeito_quant: int # Ex: 30 para 30 HP
+    efeito_atributo: str = "" # Ex: "vida", "ataque", etc.
+
+@dataclass
 class Atributos:
     """Estrutura simples de atributos."""
     vida: int
