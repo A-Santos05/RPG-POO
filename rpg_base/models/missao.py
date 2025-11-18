@@ -11,7 +11,6 @@ class ResultadoMissao:
     venceu: bool = False
     detalhes: str = "Missão simulada."
 
-
 class Missao:
     """
     Estrutura da missão sem a mecânica de combate.
@@ -47,38 +46,116 @@ class Missao:
             print(f"\n--- Turno {turno} ---")
             
             p.processar_sangramento()
+            self._decrementar_efeitos(p)
 
             # 1. PERSONAGEM ATACA INIMIGO
             # Chamada ao método que você deve implementar em Personagem
-            try:
-                if p._atrib.mana < p._atrib.mana_pool:#Calculo de regeneração de mana
-                    if p._atrib.mana + p._atrib.mana_regen > p._atrib.mana_pool:
-                        p._atrib.mana = p._atrib.mana_pool
-                    else:
-                        p._atrib.mana += p._atrib.mana_regen
-                
-                if p._atrib.mana >= p._atrib.special_cost:#Implementar uso de habilidade especial
-                    p._atrib.mana -= p._atrib.special_cost
-                    habilidade_nome = p.habilidade_especial()
-                    print(f"{p.nome} usa **{habilidade_nome}**!")
-                
-                # O Personagem.calcular_dano_base() agora retorna (dano_normal, dano_verdadeiro)
-                dano_personagem_tuple = p.calcular_dano_base() 
-                
-                # Chamada ao método de Entidade/Inimigo para cálculo de dano
-                dano_recebido_inimigo = i.receber_dano(dano_personagem_tuple)
-                
-                print(f"{p.nome} ataca! {i.nome} recebe {dano_recebido_inimigo} de dano.")
-                print(f"MANA: {p._atrib.mana}/{p._atrib.mana_pool}")
-                print(f"HP {i.nome}: {i.barra_hp(10)}")
-                self._decrementar_efeitos(p)
+            habilidade_usada = False
+            acao_realizada = False
+            while not acao_realizada:
+                print("======== Status =======")
+                print(f"{p.nome} | Nível {p.nivel}")
+                print(f"HP: {p.barra_hp(10)}")
+                print(f"MANA: {p.barra_mana(10)}")
+                print(f"ATK: {p._atrib.ataque} | DEF: {p._atrib.defesa}")
+                if p.efeitos_ativos:
+                    print("======= Efeitos =======")
+                    print(f"{[e.nome for e in p.efeitos_ativos]}")
+                print("======== Ações ========")
+                print("[1] Atacar")
+                print(f"[2] Habilidade Especial {p._atrib.mana} / {p._atrib.mana_pool}")
+                print("[3] Usar item")
+                print("[4] Inspecionar Inimigo")
+                print("=======================")
+                acao = input("> ").strip()
 
-            except NotImplementedError:
-                print("ERRO: Implemente Personagem.calcular_dano_base() primeiro.")
-                return ResultadoMissao(venceu=False, detalhes="Combate interrompido por erro de implementação.")
+                if acao == "1":
+                    # O Personagem.calcular_dano_base() agora retorna (dano_normal, dano_verdadeiro)
+                    dano_personagem_tuple = p.calcular_dano_base() 
+                    
+                    # Chamada ao método de Entidade/Inimigo para cálculo de dano
+                    dano_recebido_inimigo = i.receber_dano(dano_personagem_tuple)
+                    
+                    print(f"{p.nome} ataca! {i.nome} recebe {dano_recebido_inimigo} de dano.")
+                    print(f"MANA: {p._atrib.mana}/{p._atrib.mana_pool}")
+                    print(f"HP {i.nome}: {i.barra_hp(10)}")
+                    acao_realizada = True
+
+                if acao == "2":
+                    if p._atrib.mana >= p._atrib.special_cost and habilidade_usada == False:#Verifica se o personagem tem mana suficiente
+                        p._atrib.mana -= p._atrib.special_cost#Gasta a mana da habilidade especial
+                        habilidade_nome = p.habilidade_especial()
+                        print(f"{p.nome} usou [{habilidade_nome}]")
+                        habilidade_usada = True
+                        
+                    elif habilidade_usada == True:
+                        print(f"{p.nome} já usou a habilidade especial nesta luta!")
+
+                    else:
+                        print(f"{p.nome} não tem mana suficiente para usar a habilidade especial!")
+
+                if acao == "3":
+                    # --- IMPLEMENTAÇÃO DO INVENTÁRIO DE BATALHA ---
+                    if not p.inventario:
+                        print("\nSeu inventário está vazio!")
+                        continue # Volta para o menu de ações
+                    
+                    # Filtra apenas consumíveis para combate
+                    consumiveis = [item for item in p.inventario if item.tipo == "Consumível"]
+                    
+                    if not consumiveis:
+                        print("\nVocê não tem itens usáveis em combate!")
+                        continue
+
+                    print("\n--- Escolha um item ---")
+                    # Agrupa itens por nome para exibição
+                    nomes_unicos = sorted(list(set(i.nome for i in consumiveis)))
+                    
+                    for idx, nome_item in enumerate(nomes_unicos):
+                        qtd = len([x for x in consumiveis if x.nome == nome_item])
+                        # Pega o primeiro para ver descrição
+                        ref = next(x for x in consumiveis if x.nome == nome_item) 
+                        print(f"[{idx + 1}] {nome_item} (x{qtd}) - Cura {ref.efeito_quant} {ref.efeito_atributo}")
+                    
+                    print("[0] Voltar")
+                    
+                    escolha_item = input("> ").strip()
+                    
+                    if escolha_item == "0":
+                        print("Cancelado.")
+                        continue # Volta para o menu de ações sem gastar turno
+                    
+                    try:
+                        idx_escolhido = int(escolha_item) - 1
+                        if 0 <= idx_escolhido < len(nomes_unicos):
+                            nome_para_usar = nomes_unicos[idx_escolhido]
+                            # Tenta usar o item usando o método da classe Personagem
+                            usou = p.usar_item(nome_para_usar) #
+                            if usou:
+                                acao_realizada = True # Sucesso! O turno passa.
+                        else:
+                            print("Opção inválida.")
+                    except ValueError:
+                        print("Digite um número válido.")
+   
+                if acao == "4":
+                    print(f"===== {i.nome} =====")
+                    print(f"HP {i.nome}: {i.barra_hp(10)}")
+                    print(f"Ataque: {i._atrib.ataque}")
+                    print(f"Defesa: {i._atrib.defesa}")
+                    
+                    if i._atrib.dano_verdadeiro_perc > 0:
+                        print(f"Dano Verdadeiro (%): {i._atrib.dano_verdadeiro_perc}%")
+                else:
+                    print("Ação inválida.")
             
+            if p._atrib.mana < p._atrib.mana_pool:#Verifica se o personagem pode regenerar mana
+                if (p._atrib.mana + p._atrib.mana_regen) > p._atrib.mana_pool:#Evita que a mana ultrapasse o limite
+                    p._atrib.mana = p._atrib.mana_pool
+                else:
+                    p._atrib.mana += p._atrib.mana_regen#Regenera mana a cada ataque normal
+
             if not i.vivo:
-                #print("Inimigo morreu")
                 break
 
             #print("Inimigo ainda vivo")
@@ -103,17 +180,17 @@ class Missao:
                 dano_recebido_personagem = p.receber_dano(dano_inimigo)
                 
                 print(f"{i.nome} revida! {p.nome} recebe {dano_recebido_personagem} de dano.")
-                self._decrementar_efeitos(i)
-
+                
+            self._decrementar_efeitos(i)
             print(f"HP {p.nome}: {p.barra_hp(10)}")
             print(f"Efeitos: {p.efeitos_ativos}")
 
             if not p.vivo:
-                #print("Personagem morreu")
                 break
-            #print("Personagem ainda vivo")       
+       
             turno += 1
-            # Adicionar um pequeno delay ou pausa aqui se fosse um jogo real
+
+            input("\nPressione Enter para o próximo turno...")
 
         if not i.vivo:
             print("=============Vitória!=============")

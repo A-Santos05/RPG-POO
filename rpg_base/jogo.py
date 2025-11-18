@@ -34,9 +34,9 @@ class Jogo:
         mapa_atributos = {
             "Guerreiro":{
                 "atributos_base": Atributos(
-                    ataque=25, vida=100, defesa=40, 
-                    crit_chance=35, crit_dmg=150,
-                    mana=0, mana_pool=30, mana_regen=3, special_cost=25
+                    ataque = 25, vida = 100, defesa = 40, 
+                    crit_chance = 25, crit_dmg = 135,
+                    mana = 0, mana_pool = 30, mana_regen = 3, special_cost = 25
                 ),
                 "taxas_crescimento": {
                     "ataque": 2,
@@ -44,11 +44,23 @@ class Jogo:
                     "defesa": 3,
                 }
             },
+            "Paladino":{
+                "atributos_base": Atributos(
+                    ataque = 20, vida = 100, defesa = 45,
+                    crit_chance = 25, crit_dmg = 125, dano_verdadeiro_perc = 15,
+                    mana = 0, mana_pool = 35, mana_regen = 5, special_cost = 25
+                ),
+                "taxas_crescimento": {
+                    "ataque": 2,
+                    "vida": 12,
+                    "defesa": 4,
+                }
+            },
             "Mago":{
                 "atributos_base": Atributos(
-                    ataque=25, vida=100, defesa=20, 
-                    crit_chance=5, crit_dmg=200, 
-                    mana=0,mana_pool=60, mana_regen=10, special_cost=25, dano_verdadeiro_perc=25
+                    ataque = 25, vida = 100, defesa = 15, 
+                    crit_chance = 5, crit_dmg = 200, dano_verdadeiro_perc = 25,
+                    mana = 0,mana_pool = 60, mana_regen = 10, special_cost = 25
                     ),
                 "taxas_crescimento": {
                     "ataque": 3,
@@ -58,9 +70,9 @@ class Jogo:
             },
             "Arqueiro":{
                 "atributos_base": Atributos(
-                    ataque=30, vida=100, defesa=15, 
-                    crit_chance=25, crit_dmg=120, 
-                    mana=0,mana_pool=40, mana_regen=4, special_cost=25
+                    ataque = 30, vida = 100, defesa = 20, 
+                    crit_chance = 35, crit_dmg = 135,
+                    mana = 0,mana_pool = 40, mana_regen = 4, special_cost = 25
                     ),
                 "taxas_crescimento": {
                     "ataque": 4,
@@ -116,12 +128,14 @@ class Jogo:
         print("[1] Guerreiro")
         print("[2] Mago")
         print("[3] Arqueiro")
+        print("[4] Paladino")
         escolha = input("> ").strip()
 
         mapa = {
             "1": "Guerreiro",
             "2": "Mago",
             "3": "Arqueiro",
+            "4": "Paladino",
         }
         arq = mapa.get(escolha)
         if arq:
@@ -323,11 +337,25 @@ class Jogo:
             metodo_escolhido = random.choice(metodos_fabrica)
         
         # 2. Executa o método para instanciar o objeto (ex.: Inimigo.goblin_normal())
-        inimigo_instancia = metodo_escolhido(multiplicadores)
+        nivel_do_inimigo = self._gerar_nivel_inimigo(self._personagem_obj.nivel)
+        inimigo_instancia = metodo_escolhido(multiplicadores, nivel_do_inimigo)
         
         print(f"Inimigo gerado: {inimigo_instancia.nome}")
         return inimigo_instancia
     
+    def _gerar_nivel_inimigo(self, nivel_jogador: int) -> int:
+        """
+        Gera um nível de inimigo próximo ao do jogador (e.g., Nv-1 a Nv+1).
+        Você pode ajustar o range (random.randint) para variar a dificuldade.
+        """
+        # Exemplo: Nível do inimigo varia entre (Nv_Jogador - 1) e (Nv_Jogador + 1)
+        variacao = random.randint(-1, 1) 
+        
+        nivel_gerado = nivel_jogador + variacao
+        
+        # Garante que o nível mínimo seja 1
+        return max(1, nivel_gerado)
+
     def mostrar_status_personagem(self) -> None:
         """Exibe uma ficha completa do personagem atual."""
         
@@ -340,7 +368,7 @@ class Jogo:
         p = self._personagem_obj
         atrib = p._atrib
         
-        print("\n--- Ficha do Personagem ---")
+        print("\n=== Ficha do Personagem ===")
         print(f"Nome:     {p.nome}")
         print(f"Classe:   {p.classe}") # 'classe' foi definido no __init__ do Personagem
         print(f"Nível:    {p.nivel}")
@@ -349,13 +377,13 @@ class Jogo:
         xp_necessario = p.xp_necessario_para_nivel(p.nivel)
         print(f"XP:       {p.xp} / {xp_necessario}")
         
-        print("\n--- Atributos de Combate ---")
+        print("\n=== Atributos de Combate ===")
         print(f"HP:       {atrib.vida} / {atrib.vida_max}")
         print(f"Mana:     {atrib.mana} / {atrib.mana_pool}")
         print(f"Ataque:   {atrib.ataque}")
         print(f"Defesa:   {atrib.defesa}")
         
-        print("\n--- Atributos Secundários ---")
+        print("\n=== Atributos Secundários ===")
         print(f"Regen. Mana: {atrib.mana_regen} / turno")
         print(f"Custo Espec: {atrib.special_cost} Mana")
         print(f"Chance Crít: {atrib.crit_chance}%")
@@ -366,16 +394,16 @@ class Jogo:
         
         # Mostra efeitos ativos (se houver)
         if p.efeitos_ativos:
-            print("\n--- Efeitos Ativos ---")
+            print("\n=== Efeitos Ativos ===")
             for efeito in p.efeitos_ativos:
                 print(f"- {efeito.nome} ({efeito.duracao_atual} turnos restantes)") #
         
         # Mostra sangramento ativo (se houver)
         if atrib.sangramento_duracao > 0:
-            print("\n--- Efeitos Negativos ---")
+            print("\n=== Efeitos Negativos ===")
             print(f"🩸 Sangramento ({atrib.sangramento_dano} dano/turno, {atrib.sangramento_duracao} turnos restantes)")
 
-        print("\n------------------------------")
+        print("\n==============================")
         input("Pressione Enter para voltar ao menu...")
     
     def menu_inventario(self) -> None:

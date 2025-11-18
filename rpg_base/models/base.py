@@ -56,15 +56,21 @@ class Entidade:
     def receber_dano(self, dano: int) -> int:
         efetivo = max(1, dano - math.ceil(dano * (self._atrib.defesa / 100)))
         self._atrib.vida = max(0, self._atrib.vida - efetivo)
-
         return efetivo
-
+    
     def barra_hp(self, largura: int = 20) -> str:
-        """Barra de HP meramente visual (placeholder)."""
+        """Barra de HP"""
         v = max(0, self._atrib.vida)
         vmax = max(1, self._atrib.vida_max)
         cheio = int(largura * v / vmax)
         return "[" + " ❤️ " * cheio + " ♡ " * (largura - cheio) + f"] {v}/{vmax} HP"
+
+    def barra_mana(self, largura: int = 20) -> str:
+        """Barra de MANA"""
+        m = max(0, self._atrib.mana)
+        m_max = max(1, self._atrib.mana_pool)
+        cheio = int(largura * m / m_max)
+        return "[" + " 💧 " * cheio + "-" * (largura - cheio) + f"] {m}/{m_max} MP"
 
     def aplicar_efeito(self, efeito: Efeito):
         """Adiciona um efeito, aplicando-o."""
@@ -75,7 +81,7 @@ class Entidade:
                 e.remover(self) # Chama o método 'remover' do efeito
                 self.efeitos_ativos.remove(e)
                 break
-                
+
         self.efeitos_ativos.append(efeito)
         efeito.aplicar(self)
         print(f"[{self.nome}]: {efeito.nome} aplicado por {efeito.duracao_atual} turnos.")

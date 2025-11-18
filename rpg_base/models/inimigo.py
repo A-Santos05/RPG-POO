@@ -13,13 +13,13 @@ class Inimigo(Entidade):
 
     from typing import List, Optional
 
-    def __init__(self, nome: str, vida: int, ataque: int, defesa: int, recompensa_xp: int, itens_drop: Optional[List[Item]] = None, dano_verdadeiro_perc: int = 0):
+    def __init__(self, nome: str, vida: int, ataque: int, defesa: int, recompensa_xp: int, itens_drop: Optional[List[Item]] = None, dano_verdadeiro_perc: int = 0, nivel: int = 1):
         super().__init__(nome, Atributos(
             vida=vida, ataque=ataque, defesa=defesa, vida_max=vida, recompensa_xp=recompensa_xp, dano_verdadeiro_perc=dano_verdadeiro_perc
         ))
         self.xp_drop = recompensa_xp
         self.itens_drop = itens_drop or []
-
+        self.nivel = nivel
 
     def calcular_dano_base(self) -> Tuple[int, int]:
         """Implementa um cálculo de dano para o inimigo com variação e Dano Verdadeiro."""
@@ -33,7 +33,19 @@ class Inimigo(Entidade):
         
         return dano_normal, dano_verdadeiro
 
+    @staticmethod
+    def _calcular_multiplicador_nivel(nivel: int) -> float: # NOVO MÉTODO
+        """
+        Calcula o multiplicador de atributos com base no nível.
+        Progressão suave: 1 + (nivel - 1) * 0.15 (15% de aumento por nível após o 1).
+        """
+        if nivel <= 1:
+            return 1.0
+        
+        # Aumento de 15% por nível (ex: Nv 2 = 1.15, Nv 5 = 1 + 4 * 0.15 = 1.6)
+        return 1.0 + (nivel - 1) * 0.15
     # Atualiza o atacar para retornar a tupla (dano_normal, dano_verdadeiro)
+
     def atacar(self) -> Tuple[int, int]: 
         """Ataque do Inimigo: retorna a tupla (dano_normal, dano_verdadeiro)."""
         return self.calcular_dano_base()
@@ -72,11 +84,11 @@ class Inimigo(Entidade):
     """Definições de atributos para inimigos específicos"""
 
     @classmethod
-    def GoblinNormal(cls, multiplicadores: Dict[str, float]) -> Inimigo:
+    def GoblinNormal(cls, multiplicadores: Dict[str, float], nivel) -> Inimigo:
         vida_base = 100
         ataque_base = 5
         defesa_base = 10
-        xp_base = 10
+        xp_base = 30
 
         lista_de_possiveis_drops = [
             Item("Poção de Cura Menor", "Consumível", 25, "vida"),
@@ -84,21 +96,23 @@ class Inimigo(Entidade):
             # Adicione mais se quiser!
         ]
 
+        mult_nivel = cls._calcular_multiplicador_nivel(nivel)
+
         return cls(
             nome = "Goblin Normal",
-            vida = int(vida_base * multiplicadores.get("vida", 1.0)),
-            ataque = int(ataque_base * multiplicadores.get("ataque", 1.0)),
-            defesa = int(defesa_base * multiplicadores.get("defesa", 1.0)),
+            vida = int(vida_base * multiplicadores.get("vida", 1.0) * mult_nivel),
+            ataque = int(ataque_base * multiplicadores.get("ataque", 1.0) * mult_nivel),
+            defesa = int(defesa_base * multiplicadores.get("defesa", 1.0) * mult_nivel),
             itens_drop = lista_de_possiveis_drops,
-            recompensa_xp = int(xp_base * multiplicadores.get("xp", 1.0))
+            recompensa_xp = int(xp_base * multiplicadores.get("xp", 1.0) * mult_nivel)
         )
 
     @classmethod
-    def GoblinArqueiro(cls, multiplicadores: Dict[str, float]) -> Inimigo:
+    def GoblinArqueiro(cls, multiplicadores: Dict[str, float], nivel) -> Inimigo:
         ataque_base = 10
         defesa_base = 10
         vida_base = 100
-        xp_base = 10 # definir recompensa de xp futura
+        xp_base = 40
         
         lista_de_possiveis_drops = [
             Item("Poção de Cura Menor", "Consumível", 25, "vida"),
@@ -106,67 +120,73 @@ class Inimigo(Entidade):
             # Adicione mais se quiser!
         ]
 
+        mult_nivel = cls._calcular_multiplicador_nivel(nivel)
+
         return cls(
             nome = "Goblin Arqueiro",
-            vida = int(vida_base * multiplicadores.get("vida", 1.0)),
-            ataque = int(ataque_base * multiplicadores.get("ataque", 1.0)),
-            defesa = int(defesa_base * multiplicadores.get("defesa", 1.0)),
+            vida = int(vida_base * multiplicadores.get("vida", 1.0) * mult_nivel),
+            ataque = int(ataque_base * multiplicadores.get("ataque", 1.0) * mult_nivel),
+            defesa = int(defesa_base * multiplicadores.get("defesa", 1.0) * mult_nivel),
             itens_drop = lista_de_possiveis_drops,
-            recompensa_xp = int(xp_base * multiplicadores.get("xp", 1.0))
+            recompensa_xp = int(xp_base * multiplicadores.get("xp", 1.0) * mult_nivel)
         )
 
     @classmethod
-    def GoblinMago(cls, multiplicadores: Dict[str, float]) -> Inimigo:
+    def GoblinMago(cls, multiplicadores: Dict[str, float], nivel) -> Inimigo:
         ataque_base = 20
         dano_verdadeiro_base = 25
         defesa_base = 10
         vida_base = 100
-        xp_base = 10
+        xp_base = 50
 
         lista_de_possiveis_drops = [
             Item("Poção de Cura Menor", "Consumível", 25, "vida"),
             Item("Bandagem Simples", "Consumível", 10, "vida"),
             # Adicione mais se quiser!
         ]
+
+        mult_nivel = cls._calcular_multiplicador_nivel(nivel)
 
         return cls(
             nome = "Goblin Mago",
-            vida = int(vida_base * multiplicadores.get("vida", 1.0)),
-            ataque = int(ataque_base * multiplicadores.get("ataque", 1.0)),
-            dano_verdadeiro_perc = int(dano_verdadeiro_base * multiplicadores.get("dano_verdadeiro",1.0)),
-            defesa = int(defesa_base * multiplicadores.get("defesa", 1.0)),
+            vida = int(vida_base * multiplicadores.get("vida", 1.0) * mult_nivel),
+            ataque = int(ataque_base * multiplicadores.get("ataque", 1.0) * mult_nivel),
+            dano_verdadeiro_perc = int(dano_verdadeiro_base * multiplicadores.get("dano_verdadeiro",1.0) * mult_nivel),
+            defesa = int(defesa_base * multiplicadores.get("defesa", 1.0) * mult_nivel),
             itens_drop = lista_de_possiveis_drops,
-            recompensa_xp = int(xp_base * multiplicadores.get("xp", 1.0))
+            recompensa_xp = int(xp_base * multiplicadores.get("xp", 1.0) * mult_nivel)
         )
     
     @classmethod
-    def GoblinEscudeiro(cls, multiplicadores: Dict[str, float]) -> Inimigo:
+    def GoblinEscudeiro(cls, multiplicadores: Dict[str, float], nivel) -> Inimigo:
         ataque_base = 3
         vida_base = 100
         defesa_base = 20
-        xp_base = 10 # definir recompensa de xp futura
+        xp_base = 30
 
         lista_de_possiveis_drops = [
             Item("Poção de Cura Menor", "Consumível", 25, "vida"),
             Item("Bandagem Simples", "Consumível", 10, "vida"),
             # Adicione mais se quiser!
         ]
+
+        mult_nivel = cls._calcular_multiplicador_nivel(nivel)
         
         return cls(
             nome = "Goblin Escudeiro",
-            vida = int(vida_base * multiplicadores.get("vida", 1.0)),
-            ataque = int(ataque_base * multiplicadores.get("ataque", 1.0)),
-            defesa = int(defesa_base * multiplicadores.get("defesa", 1.0)),
+            vida = int(vida_base * multiplicadores.get("vida", 1.0) * mult_nivel),
+            ataque = int(ataque_base * multiplicadores.get("ataque", 1.0) * mult_nivel),
+            defesa = int(defesa_base * multiplicadores.get("defesa", 1.0) * mult_nivel),
             itens_drop = lista_de_possiveis_drops,
-            recompensa_xp = int(xp_base * multiplicadores.get("xp", 1.0))
+            recompensa_xp = int(xp_base * multiplicadores.get("xp", 1.0) * mult_nivel)
         )
     
     @classmethod
     def ReiDoBostil(cls, multiplicadores: Dict[str, float]) -> Inimigo:
-        vida_base = 350
-        ataque_base = 20
-        defesa_base = 15
-        xp_base = 100
+        vida_base = 1200
+        ataque_base = 55
+        defesa_base = 30
+        xp_base = 500
         
         return cls(
             nome = "Globin",
@@ -183,17 +203,17 @@ class Inimigo(Entidade):
         Este ataque sempre acerta, mas não é um dano altíssimo.
         """
         # Dano base do ataque especial
-        dano_base = int(self._atrib.ataque * 0.75)
-        dano_variacao = random.randint(-1, 1)
+        dano_base = int(self._atrib.ataque * 1)
+        dano_variacao = random.randint(0, 5)
         dano_final = max(1, dano_base + dano_variacao)
         
         # O dano é aplicado como dano normal (reduzido pela defesa do Personagem)
         dano_recebido = alvo.receber_dano(dano_final)
         
         # Aplica o efeito de Sangramento
-        # Sangramento padrão: 10 de dano por turno, duração de 2 turnos
-        dano_sangramento = 13
-        duracao = 2 
+        # Sangramento padrão: 20 de dano por turno, duração de 2 turnos
+        dano_sangramento = 20
+        duracao = 2
 
         print(f"** {self.nome} usa ATAQUE SANGRENTO! {alvo.nome} recebe {dano_recebido} de dano! **")
 

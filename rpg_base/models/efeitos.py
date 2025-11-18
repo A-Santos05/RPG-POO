@@ -33,9 +33,9 @@ class Efeito:
 class EscudoDeGuerra(Efeito):
     """Guerreiro: Aumenta a defesa por 2 turnos."""
     
-    def __init__(self):
+    def __init__(self, alvo: 'Personagem'):
         super().__init__("Escudo de Guerra", 2)
-        self.bonus_defesa = 5 # Valor fixo de aumento de defesa
+        self.bonus_defesa = int(alvo._atrib.defesa * 0.2) 
         
     def aplicar(self, alvo: 'Personagem'):
         # Aplicamos o bônus diretamente nos atributos.
@@ -45,13 +45,13 @@ class EscudoDeGuerra(Efeito):
     def remover(self, alvo: 'Personagem'):
         # Removemos o bônus, restaurando o valor original de defesa.
         alvo._atrib.defesa -= self.bonus_defesa
-        print(f"[{alvo.nome}]: Efeito Escudo de Guerra expirou.")
+        print("Escudo de Guerra expirou.")
 
 class TransfusaoArcana(Efeito):
     """Mago: Aumenta a conversão de ATK para dano verdadeiro por 2 turnos."""
     
     def __init__(self):
-        super().__init__("Transfusão Arcana", 2)
+        super().__init__("Poder maligno fenomenal", 2)
         self.bonus_conversao = 200 #Funciona como o dano critico, se 25% vira TRUE DMG, se o bonus_conversao for 100, TRUE DMG vai continuar como 25%, 200 vira 50% de TRUE DMG
         
     def aplicar(self, alvo: 'Personagem'):
@@ -59,7 +59,7 @@ class TransfusaoArcana(Efeito):
         pass
 
     def remover(self, alvo: 'Personagem'):
-        print(f"[{alvo.nome}]: Efeito Transfusão Arcana expirou.")
+        print("Poder maligno fenomenal expirou.")
 
 class FocoDoCacador(Efeito):
     """Arqueiro: Aumenta chance e dano crítico por 2 turnos."""
@@ -75,3 +75,18 @@ class FocoDoCacador(Efeito):
 
     def remover(self, alvo: 'Personagem'):
         print(f"[{alvo.nome}]: Efeito Foco do Caçador expirou.")
+
+class BencaoDivina(Efeito):
+    """Paladino: Se cura ao usar a habilidade."""
+    
+    def __init__(self, alvo: 'Personagem'):
+        super().__init__("Bênção Divina", 0)
+        self.cura = int(alvo._atrib.vida_max * 0.15)  # Cura 15% da vida máxima
+        
+    def aplicar(self, alvo: 'Personagem'):
+        alvo._atrib.vida = min(alvo._atrib.vida_max, alvo._atrib.vida + self.cura)
+        print(f"[{alvo.nome}]: Bênção Divina cura {self.cura} de vida!")
+        
+
+    def remover(self, alvo: 'Personagem'):
+        print(f"[{alvo.nome}]: Efeito Bênção Divina expirou.")

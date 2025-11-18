@@ -1,10 +1,9 @@
 from __future__ import annotations
 from .base import Entidade, Atributos, Item
-from .efeitos import EscudoDeGuerra, TransfusaoArcana, FocoDoCacador, Efeito
+from .efeitos import EscudoDeGuerra, TransfusaoArcana, FocoDoCacador, BencaoDivina, Efeito
 from typing import List, Union, Tuple
 import random
 import math
-
 
 class Personagem(Entidade):
     """
@@ -126,11 +125,13 @@ class Personagem(Entidade):
         # A Missão verifica a mana e gasta antes de chamar este método.
         efeito_aplicar: Efeito
         if self.classe == "Guerreiro":
-            efeito_aplicar = EscudoDeGuerra()
+            efeito_aplicar = EscudoDeGuerra(self)
         elif self.classe == "Mago":
             efeito_aplicar = TransfusaoArcana()
         elif self.classe == "Arqueiro":
             efeito_aplicar = FocoDoCacador()
+        elif self.classe == "Paladino":
+            efeito_aplicar = BencaoDivina(self)
         else:
             return "Nenhuma habilidade especial implementada para esta classe."
 
@@ -146,10 +147,21 @@ class Personagem(Entidade):
         Fórmula simples: XP = Nível * 100
         """
         if nivel <= 0:
-            return 100 # Garante um valor mínimo
+            return 140 # Garante um valor mínimo
+        # Fórmula de progressão de XP: 100 * (N * 1.4)
+        # Explicação: Cada nível requer 40% a mais de XP que o nível anterior.
+        # nivel 1 -> 140 XP
+        # nivel 2 -> 280 XP
+        # nivel 3 -> 420 XP
+        # nivel 4 -> 560 XP
+        # nivel 5 -> 700 XP
+        # nivel 6 -> 840 XP
+        # nivel 7 -> 980 XP
+        # nivel 8 -> 1120 XP
+        # nivel 9 -> 1260 XP
+        # nivel 10 -> 1400 XP
         
-        # Fórmula de progressão de XP
-        return nivel * 100
+        return round(100 * (nivel * 1.4))
     
     def ganhar_xp(self, valor_xp: int) -> None:
         """
