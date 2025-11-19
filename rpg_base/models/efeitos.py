@@ -26,7 +26,7 @@ class Efeito:
         return self.duracao_atual <= 0
 
     def __repr__(self) -> str:
-        return f"<{self.nome}: {self.duracao_atual} turnos>"
+        return f"[{self.nome}] {self.duracao_atual} turno(s) restante(s)"
 
 # --- Efeitos Específicos de Classe ---
 
@@ -47,11 +47,11 @@ class EscudoDeGuerra(Efeito):
         alvo._atrib.defesa -= self.bonus_defesa
         print("Escudo de Guerra expirou.")
 
-class TransfusaoArcana(Efeito):
+class AmplificacaoArcana(Efeito):
     """Mago: Aumenta a conversão de ATK para dano verdadeiro por 2 turnos."""
     
     def __init__(self):
-        super().__init__("Poder maligno fenomenal", 2)
+        super().__init__("Amplificação Arcana", 2)
         self.bonus_conversao = 200 #Funciona como o dano critico, se 25% vira TRUE DMG, se o bonus_conversao for 100, TRUE DMG vai continuar como 25%, 200 vira 50% de TRUE DMG
         
     def aplicar(self, alvo: 'Personagem'):
@@ -59,7 +59,7 @@ class TransfusaoArcana(Efeito):
         pass
 
     def remover(self, alvo: 'Personagem'):
-        print("Poder maligno fenomenal expirou.")
+        print("Amplificação Arcana expirou.")
 
 class FocoDoCacador(Efeito):
     """Arqueiro: Aumenta chance e dano crítico por 2 turnos."""
@@ -74,7 +74,7 @@ class FocoDoCacador(Efeito):
         pass
 
     def remover(self, alvo: 'Personagem'):
-        print(f"[{alvo.nome}]: Efeito Foco do Caçador expirou.")
+        print(f"Foco do Caçador expirou.")
 
 class BencaoDivina(Efeito):
     """Paladino: Se cura ao usar a habilidade."""
@@ -85,8 +85,23 @@ class BencaoDivina(Efeito):
         
     def aplicar(self, alvo: 'Personagem'):
         alvo._atrib.vida = min(alvo._atrib.vida_max, alvo._atrib.vida + self.cura)
-        print(f"[{alvo.nome}]: Bênção Divina cura {self.cura} de vida!")
+        print(f"Bênção Divina cura {self.cura} de vida!")
         
 
     def remover(self, alvo: 'Personagem'):
-        print(f"[{alvo.nome}]: Efeito Bênção Divina expirou.")
+        print(f"Bênção Divina expirou.")
+
+class Zandatsu(Efeito):
+    """Espadachim: Aumenta draticamente o critco por 2 turnos."""
+    
+    def __init__(self):
+        super().__init__("Zandatsu", 2)
+        self.bonus_chance_crit = 10 # +10% de chance crítica
+        self.bonus_dano_crit = 100 # +100% de dano crítica
+        
+    def aplicar(self, alvo: 'Personagem'):
+        # Não muda o atributo diretamente, o cálculo está em Personagem.calcular_dano_base()
+        pass
+
+    def remover(self, alvo: 'Personagem'):
+        print(f"Zandatsu expirou.")

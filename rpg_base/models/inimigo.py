@@ -91,8 +91,8 @@ class Inimigo(Entidade):
         xp_base = 30
 
         lista_de_possiveis_drops = [
-            Item("Poção de Cura Menor", "Consumível", 25, "vida"),
-            Item("Bandagem Simples", "Consumível", 10, "vida"),
+            Item("Poção de Cura Menor", "Consumível", 30, "vida"),
+            Item("Bandagem Simples", "Consumível", 15, "vida"),
             # Adicione mais se quiser!
         ]
 
@@ -115,8 +115,8 @@ class Inimigo(Entidade):
         xp_base = 30
 
         lista_de_possiveis_drops = [
-            Item("Poção de Cura Menor", "Consumível", 25, "vida"),
-            Item("Bandagem Simples", "Consumível", 10, "vida"),
+            Item("Poção de Cura Menor", "Consumível", 30, "vida"),
+            Item("Bandagem Simples", "Consumível", 15, "vida"),
             # Adicione mais se quiser!
         ]
         mult_nivel = cls._calcular_multiplicador_nivel(nivel)
@@ -137,8 +137,8 @@ class Inimigo(Entidade):
         xp_base = 40
         
         lista_de_possiveis_drops = [
-            Item("Poção de Cura Menor", "Consumível", 25, "vida"),
-            Item("Bandagem Simples", "Consumível", 10, "vida"),
+            Item("Poção de Cura Menor", "Consumível", 30, "vida"),
+            Item("Bandagem Simples", "Consumível", 15, "vida"),
             # Adicione mais se quiser!
         ]
 
@@ -162,8 +162,8 @@ class Inimigo(Entidade):
         xp_base = 50
 
         lista_de_possiveis_drops = [
-            Item("Poção de Cura Menor", "Consumível", 25, "vida"),
-            Item("Bandagem Simples", "Consumível", 10, "vida"),
+            Item("Poção de Cura Menor", "Consumível", 30, "vida"),
+            Item("Bandagem Simples", "Consumível", 15, "vida"),
             # Adicione mais se quiser!
         ]
 
@@ -187,8 +187,8 @@ class Inimigo(Entidade):
         xp_base = 30
 
         lista_de_possiveis_drops = [
-            Item("Poção de Cura Menor", "Consumível", 25, "vida"),
-            Item("Bandagem Simples", "Consumível", 10, "vida"),
+            Item("Poção de Cura Menor", "Consumível", 30, "vida"),
+            Item("Bandagem Simples", "Consumível", 15, "vida"),
             # Adicione mais se quiser!
         ]
 
@@ -214,8 +214,8 @@ class Inimigo(Entidade):
         xp_base = 30
 
         lista_de_possiveis_drops = [
-            Item("Poção de Cura Menor", "Consumível", 25, "vida"),
-            Item("Bandagem Simples", "Consumível", 10, "vida"),
+            Item("Poção de Cura Menor", "Consumível", 30, "vida"),
+            Item("Bandagem Simples", "Consumível", 15, "vida"),
             # Adicione mais se quiser!
         ]
 
@@ -239,8 +239,8 @@ class Inimigo(Entidade):
         xp_base = 30
 
         lista_de_possiveis_drops = [
-            Item("Poção de Cura Menor", "Consumível", 25, "vida"),
-            Item("Bandagem Simples", "Consumível", 10, "vida"),
+            Item("Poção de Cura Menor", "Consumível", 30, "vida"),
+            Item("Bandagem Simples", "Consumível", 15, "vida"),
             # Adicione mais se quiser!
         ]
 
@@ -264,8 +264,8 @@ class Inimigo(Entidade):
         xp_base = 50
 
         lista_de_possiveis_drops = [
-            Item("Poção de Cura Menor", "Consumível", 25, "vida"),
-            Item("Bandagem Simples", "Consumível", 10, "vida"),
+            Item("Poção de Cura Menor", "Consumível", 30, "vida"),
+            Item("Bandagem Simples", "Consumível", 15, "vida"),
             # Adicione mais se quiser!
         ]
 
@@ -290,8 +290,8 @@ class Inimigo(Entidade):
         xp_base = 40
         
         lista_de_possiveis_drops = [
-            Item("Poção de Cura Menor", "Consumível", 25, "vida"),
-            Item("Bandagem Simples", "Consumível", 10, "vida"),
+            Item("Poção de Cura Menor", "Consumível", 30, "vida"),
+            Item("Bandagem Simples", "Consumível", 15, "vida"),
             # Adicione mais se quiser!
         ]
 
@@ -315,8 +315,8 @@ class Inimigo(Entidade):
         xp_base = 30
 
         lista_de_possiveis_drops = [
-            Item("Poção de Cura Menor", "Consumível", 25, "vida"),
-            Item("Bandagem Simples", "Consumível", 10, "vida"),
+            Item("Poção de Cura Menor", "Consumível", 30, "vida"),
+            Item("Bandagem Simples", "Consumível", 15, "vida"),
             # Adicione mais se quiser!
         ]
 
@@ -342,8 +342,8 @@ class Inimigo(Entidade):
         xp_base = 30
 
         lista_de_possiveis_drops = [
-            Item("Poção de Cura Menor", "Consumível", 25, "vida"),
-            Item("Bandagem Simples", "Consumível", 10, "vida"),
+            Item("Poção de Cura Menor", "Consumível", 30, "vida"),
+            Item("Bandagem Simples", "Consumível", 15, "vida"),
             # Adicione mais se quiser!
         ]
 
@@ -367,8 +367,8 @@ class Inimigo(Entidade):
         xp_base = 30
 
         lista_de_possiveis_drops = [
-            Item("Poção de Cura Menor", "Consumível", 25, "vida"),
-            Item("Bandagem Simples", "Consumível", 10, "vida"),
+            Item("Poção de Cura Menor", "Consumível", 30, "vida"),
+            Item("Bandagem Simples", "Consumível", 15, "vida"),
             # Adicione mais se quiser!
         ]
 
@@ -391,8 +391,8 @@ class Inimigo(Entidade):
         xp_base = 40
         
         lista_de_possiveis_drops = [
-            Item("Poção de Cura Menor", "Consumível", 25, "vida"),
-            Item("Bandagem Simples", "Consumível", 10, "vida"),
+            Item("Poção de Cura Menor", "Consumível", 30, "vida"),
+            Item("Bandagem Simples", "Consumível", 15, "vida"),
             # Adicione mais se quiser!
         ]
 
@@ -416,8 +416,8 @@ class Inimigo(Entidade):
         xp_base = 50
 
         lista_de_possiveis_drops = [
-            Item("Poção de Cura Menor", "Consumível", 25, "vida"),
-            Item("Bandagem Simples", "Consumível", 10, "vida"),
+            Item("Poção de Cura Menor", "Consumível", 30, "vida"),
+            Item("Bandagem Simples", "Consumível", 15, "vida"),
             # Adicione mais se quiser!
         ]
 
@@ -441,8 +441,8 @@ class Inimigo(Entidade):
         xp_base = 30
 
         lista_de_possiveis_drops = [
-            Item("Poção de Cura Menor", "Consumível", 25, "vida"),
-            Item("Bandagem Simples", "Consumível", 10, "vida"),
+            Item("Poção de Cura Menor", "Consumível", 30, "vida"),
+            Item("Bandagem Simples", "Consumível", 15, "vida"),
             # Adicione mais se quiser!
         ]
 
@@ -468,8 +468,8 @@ class Inimigo(Entidade):
         xp_base = 30
 
         lista_de_possiveis_drops = [
-            Item("Poção de Cura Menor", "Consumível", 25, "vida"),
-            Item("Bandagem Simples", "Consumível", 10, "vida"),
+            Item("Poção de Cura Menor", "Consumível", 30, "vida"),
+            Item("Bandagem Simples", "Consumível", 15, "vida"),
             # Adicione mais se quiser!
         ]
 
@@ -492,8 +492,8 @@ class Inimigo(Entidade):
         xp_base = 30
 
         lista_de_possiveis_drops = [
-            Item("Poção de Cura Menor", "Consumível", 25, "vida"),
-            Item("Bandagem Simples", "Consumível", 10, "vida"),
+            Item("Poção de Cura Menor", "Consumível", 30, "vida"),
+            Item("Bandagem Simples", "Consumível", 15, "vida"),
             # Adicione mais se quiser!
         ]
 
@@ -516,8 +516,8 @@ class Inimigo(Entidade):
         xp_base = 40
         
         lista_de_possiveis_drops = [
-            Item("Poção de Cura Menor", "Consumível", 25, "vida"),
-            Item("Bandagem Simples", "Consumível", 10, "vida"),
+            Item("Poção de Cura Menor", "Consumível", 30, "vida"),
+            Item("Bandagem Simples", "Consumível", 15, "vida"),
             # Adicione mais se quiser!
         ]
 
@@ -541,8 +541,8 @@ class Inimigo(Entidade):
         xp_base = 50
 
         lista_de_possiveis_drops = [
-            Item("Poção de Cura Menor", "Consumível", 25, "vida"),
-            Item("Bandagem Simples", "Consumível", 10, "vida"),
+            Item("Poção de Cura Menor", "Consumível", 30, "vida"),
+            Item("Bandagem Simples", "Consumível", 15, "vida"),
             # Adicione mais se quiser!
         ]
 
@@ -566,8 +566,8 @@ class Inimigo(Entidade):
         xp_base = 30
 
         lista_de_possiveis_drops = [
-            Item("Poção de Cura Menor", "Consumível", 25, "vida"),
-            Item("Bandagem Simples", "Consumível", 10, "vida"),
+            Item("Poção de Cura Menor", "Consumível", 30, "vida"),
+            Item("Bandagem Simples", "Consumível", 15, "vida"),
             # Adicione mais se quiser!
         ]
 
@@ -584,7 +584,7 @@ class Inimigo(Entidade):
 
 
     @classmethod
-    def ReiDoBostil(cls, multiplicadores: Dict[str, float]) -> Inimigo:
+    def ReiDoBostil(cls, multiplicadores: Dict[str, float], nivel) -> Inimigo:
         vida_base = 1200
         ataque_base = 55
         defesa_base = 30

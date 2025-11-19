@@ -4,6 +4,7 @@ from .base import Entidade
 from .personagem import Personagem
 from .inimigo import Inimigo
 import random
+import time
 
 @dataclass
 class ResultadoMissao:
@@ -37,13 +38,13 @@ class Missao:
         i = self.inimigo
         i._atrib.vida = i._atrib.vida_max # Garante HP cheio no início do combate
         
-        print(f"\n=== Missão: {self.titulo} ===")
-        print(f"O combate entre {p.nome} (Lvl {p.nivel}) e {i.nome} (HP: {i._atrib.vida} DEF: {i._atrib.defesa} ATK: {i._atrib.ataque}) começa!")
+        print(f"\n=== Missão: {self.titulo} ===\n")
+        print(f"{p.nome} [Lvl {p.nivel}] VS {i.nome} [Lvl {i.nivel}]")
 
         # --- Loop Principal do Combate ---
         turno = 1
         while p.vivo and i.vivo:
-            print(f"\n--- Turno {turno} ---")
+            print(f"\n======= Turno {turno} =======\n")
             
             p.processar_sangramento()
             self._decrementar_efeitos(p)
@@ -59,8 +60,11 @@ class Missao:
                 print(f"MANA: {p.barra_mana(10)}")
                 print(f"ATK: {p._atrib.ataque} | DEF: {p._atrib.defesa}")
                 if p.efeitos_ativos:
-                    print("======= Efeitos =======")
-                    print(f"{[e.nome for e in p.efeitos_ativos]}")
+                    if p.efeitos_ativos[0].duracao_atual > 0:
+                        print("======= Efeitos =======")
+                        for e in p.efeitos_ativos:
+                                print(f"[{e.nome}] {e.duracao_atual} turno(s) restante(s)")
+                    #print(f"{[e.nome for e in p.efeitos_ativos]}")
                 print("======== Ações ========")
                 print("[1] Atacar")
                 print(f"[2] Habilidade Especial {p._atrib.mana} / {p._atrib.mana_pool}")
@@ -69,7 +73,7 @@ class Missao:
                 print("=======================")
                 acao = input("> ").strip()
 
-                if acao == "1":
+                if acao == "1":#Atacar
                     # O Personagem.calcular_dano_base() agora retorna (dano_normal, dano_verdadeiro)
                     dano_personagem_tuple = p.calcular_dano_base() 
                     
@@ -77,16 +81,17 @@ class Missao:
                     dano_recebido_inimigo = i.receber_dano(dano_personagem_tuple)
                     
                     print(f"{p.nome} ataca! {i.nome} recebe {dano_recebido_inimigo} de dano.")
-                    print(f"MANA: {p._atrib.mana}/{p._atrib.mana_pool}")
                     print(f"HP {i.nome}: {i.barra_hp(10)}")
                     acao_realizada = True
 
-                if acao == "2":
+                elif acao == "2":#Habilidade Especial
                     if p._atrib.mana >= p._atrib.special_cost and habilidade_usada == False:#Verifica se o personagem tem mana suficiente
                         p._atrib.mana -= p._atrib.special_cost#Gasta a mana da habilidade especial
-                        habilidade_nome = p.habilidade_especial()
-                        print(f"{p.nome} usou [{habilidade_nome}]")
+                        p.habilidade_especial()
+                        #print(f"{p.nome} usou [{habilidade_nome}]")
                         habilidade_usada = True
+
+                        time.sleep(2)# Pequena pausa para melhor leitura
                         
                     elif habilidade_usada == True:
                         print(f"{p.nome} já usou a habilidade especial nesta luta!")
@@ -94,7 +99,7 @@ class Missao:
                     else:
                         print(f"{p.nome} não tem mana suficiente para usar a habilidade especial!")
 
-                if acao == "3":
+                elif acao == "3":#Usar item
                     # --- IMPLEMENTAÇÃO DO INVENTÁRIO DE BATALHA ---
                     if not p.inventario:
                         print("\nSeu inventário está vazio!")
@@ -138,7 +143,7 @@ class Missao:
                     except ValueError:
                         print("Digite um número válido.")
    
-                if acao == "4":
+                elif acao == "4":#Inspecionar Inimigo
                     print(f"===== {i.nome} =====")
                     print(f"HP {i.nome}: {i.barra_hp(10)}")
                     print(f"Ataque: {i._atrib.ataque}")
@@ -146,6 +151,7 @@ class Missao:
                     
                     if i._atrib.dano_verdadeiro_perc > 0:
                         print(f"Dano Verdadeiro (%): {i._atrib.dano_verdadeiro_perc}%")
+                
                 else:
                     print("Ação inválida.")
             
@@ -155,9 +161,12 @@ class Missao:
                 else:
                     p._atrib.mana += p._atrib.mana_regen#Regenera mana a cada ataque normal
 
+            time.sleep(2)# Pequena pausa para melhor leitura
+            
             if not i.vivo:
                 break
 
+            print("\n===== Turno do inimigo =====")
             #print("Inimigo ainda vivo")
             #Lógica para o ataque especial do REI DO BOSTIL
             if i.nome == "Globin":
@@ -183,7 +192,7 @@ class Missao:
                 
             self._decrementar_efeitos(i)
             print(f"HP {p.nome}: {p.barra_hp(10)}")
-            print(f"Efeitos: {p.efeitos_ativos}")
+            #print(f"Efeitos: {p.efeitos_ativos}")
 
             if not p.vivo:
                 break
@@ -202,6 +211,8 @@ class Missao:
             print(f"{p.nome} foi derrotado!")
             print("==================================")
 
+        time.sleep(2)# Pequena pausa para melhor leitura
+
         p.limpar_efeitos(ao_final_da_luta=True)
         i.limpar_efeitos(ao_final_da_luta=True)
                 
@@ -211,17 +222,27 @@ class Missao:
             
             xp_ganho = i.xp_drop # Pega o XP que o inimigo dropa (definido em Inimigo)
             p.ganhar_xp(xp_ganho)
-            # Lógica de XP/Recompensa aqui
+
+            time.sleep(2)# Pequena pausa para melhor leitura
+
 
             if i.itens_drop:
                 item_sorteado = random.choice(i.itens_drop)
-                print(f"{p.nome} ganhou o item: {item_sorteado.nome}")
+                print("\n================ LOOT ================")
+                print(f"{p.nome} coletou: {item_sorteado.nome}")
+                print("======================================")
+                
                 p.coletar_item(item_sorteado)
 
-            return ResultadoMissao(venceu=True, detalhes=f"{p.nome} derrotou {i.nome}.")
+                time.sleep(2)# Pequena pausa para melhor leitura
+
+            return ResultadoMissao(venceu=True, detalhes=f"{i.nome} foi derrotado.")
+        
         else:
             print(f"{p.nome} falhou na missão {self.titulo}.")
             return ResultadoMissao(venceu=False, detalhes=f"{p.nome} foi derrotado por {i.nome}.")
+        
+    time.sleep(2)# Pequena pausa para melhor leitura
         
     def _decrementar_efeitos(self, entidade: Entidade): # NOVO MÉTODO AUXILIAR
         """Decrementa a duração dos efeitos ativos e remove os que expiraram."""

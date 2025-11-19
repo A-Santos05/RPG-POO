@@ -82,6 +82,18 @@ class Jogo:
                     "defesa": 1,
                 }
             },
+            "Espadachim":{
+                "atributos_base": Atributos(
+                    ataque = 20, vida = 100, defesa = 15, 
+                    crit_chance = 65, crit_dmg = 115,
+                    mana = 0, mana_pool = 45, mana_regen = 3, special_cost = 25
+                    ),
+                "taxas_crescimento": {
+                    "ataque": 2,
+                    "vida": 4,
+                    "defesa": 1,
+                }
+            },
         }
         
         return mapa_atributos.get(arquetipo)
@@ -131,6 +143,7 @@ class Jogo:
         print("[2] Mago")
         print("[3] Arqueiro")
         print("[4] Paladino")
+        print("[5] Espadachim")
         escolha = input("> ").strip()
 
         mapa = {
@@ -138,6 +151,7 @@ class Jogo:
             "2": "Mago",
             "3": "Arqueiro",
             "4": "Paladino",
+            "5": "Espadachim",
         }
         arq = mapa.get(escolha)
         if arq:
@@ -178,7 +192,7 @@ class Jogo:
         print(f"Nome: {novo_personagem.nome} | Arquétipo: {arquetipo}")
         print(f"ATK: {atributos_base.ataque} | DEF: {atributos_base.defesa} | HP: {atributos_base.vida}")
         print(f"Crit Chance: {atributos_base.crit_chance}% | Crit Dmg: {atributos_base.crit_dmg}%")
-        print(f"Mana Pool: {atributos_base.mana_pool} | Mana Regen: {atributos_base.mana_regen}/turno")
+        print(f"Mana Pool: {atributos_base.mana_pool} | Mana Regen: {atributos_base.mana_regen} / turno")
         print(f"Vida Máxima Real: {novo_personagem._atrib.vida_max}")
 
     def _ajuda_criar_personagem(self) -> None:
@@ -360,7 +374,7 @@ class Jogo:
             
         # Verifica se o usuário pode jogar o cenário do Boss
         if self._personagem_obj.nivel >= 9 and self.missao_config["cenario"] == "Bostil":
-            metodo_escolhido =Inimigo.ReiDoBostil
+            metodo_escolhido = Inimigo.ReiDoBostil
         else:
             metodo_escolhido = random.choice(metodos_fabrica)
         

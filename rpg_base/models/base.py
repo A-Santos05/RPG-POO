@@ -91,7 +91,8 @@ class Entidade:
 
         self.efeitos_ativos.append(efeito)
         efeito.aplicar(self)
-        print(f"[{self.nome}]: {efeito.nome} aplicado por {efeito.duracao_atual} turnos.")
+        #if efeito.duracao_atual > 0:
+        #    print(f"{efeito.nome} aplicado por {efeito.duracao_atual} turnos.")
 
     def limpar_efeitos(self, ao_final_da_luta: bool = False):
         """Remove todos os efeitos ativos, restaurando os atributos."""
@@ -100,4 +101,4 @@ class Entidade:
             for efeito in list(self.efeitos_ativos): # Cria uma cópia para iterar
                 efeito.remover(self)
             self.efeitos_ativos.clear()
-            print(f"[{self.nome}]: Todos os efeitos removidos.") # Opcional
+            #print(f"[{self.nome}]: Todos os efeitos removidos.") # Opcional

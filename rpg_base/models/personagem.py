@@ -1,6 +1,6 @@
 from __future__ import annotations
 from .base import Entidade, Atributos, Item
-from .efeitos import EscudoDeGuerra, TransfusaoArcana, FocoDoCacador, BencaoDivina, Efeito
+from .efeitos import EscudoDeGuerra, AmplificacaoArcana, FocoDoCacador, BencaoDivina, Zandatsu, Efeito
 from typing import List, Union, Tuple
 from dataclasses import asdict
 import random
@@ -22,7 +22,6 @@ class Personagem(Entidade):
 
     def coletar_item(self, item: Item) -> None:
         """Adiciona um item ao inventário."""
-        print(f"{self.nome} COLETADO: {item.nome}!")
         self.inventario.append(item)
 
     def usar_item(self, nome_item: str) -> bool:
@@ -55,7 +54,7 @@ class Personagem(Entidade):
         conversao_verdadeira = self._atrib.dano_verdadeiro_perc / 100
         
         # 1. VERIFICAÇÃO DO BUFF DO MAGO (Transfusao Arcana)
-        efeito_mago = next((e for e in self.efeitos_ativos if e.nome == "Transfusão Arcana"), None)
+        efeito_mago = next((e for e in self.efeitos_ativos if e.nome == "Amplificação Arcana"), None)
         if efeito_mago:
             # Assumindo que o bônus está armazenado no objeto Efeito
             conversao_verdadeira = conversao_verdadeira * (efeito_mago.bonus_conversao / 100)
@@ -71,11 +70,11 @@ class Personagem(Entidade):
         chance_critico = self._atrib.crit_chance / 100
         multiplicador_critico = self._atrib.crit_dmg / 100
 
-        # 2. VERIFICAÇÃO DO BUFF DO ARQUEIRO (Foco do Caçador)
-        efeito_arqueiro = next((e for e in self.efeitos_ativos if e.nome == "Foco do Caçador"), None)
-        if efeito_arqueiro:
-            chance_critico += efeito_arqueiro.bonus_chance_crit / 100
-            multiplicador_critico += efeito_arqueiro.bonus_dano_crit / 100
+        # 2. VERIFICAÇÃO DO BUFF DE DANO CRITICO [foco do Caçador ou Zandatsu]
+        bonus_critico = next((e for e in self.efeitos_ativos if e.nome == "Foco do Caçador" or e.nome == "Zandatsu"), None)
+        if bonus_critico:
+            chance_critico += bonus_critico.bonus_chance_crit / 100
+            multiplicador_critico += bonus_critico.bonus_dano_crit / 100
             
         if random.random() < chance_critico:
             # Aplica o multiplicador no dano total (Normal + Verdadeiro)
@@ -87,7 +86,7 @@ class Personagem(Entidade):
             dano_normal_final = dano_critico - dano_verdadeiro_final
             
             # Print de crítico (opcional)
-            print(f"*** CRÍTICO! ***")
+            print(f"[CRÍTICO]")
             return dano_normal_final, dano_verdadeiro_final
         else:
             return dano_normal, dano_verdadeiro
@@ -118,7 +117,7 @@ class Personagem(Entidade):
             # Comportamento base (dano simples INT) - usa o método da Entidade
             return super().receber_dano(dano)
 
-    def habilidade_especial(self) -> str: # NOVO
+    def habilidade_especial(self) -> None: # NOVO
         """
         Gasta mana e aplica o efeito da habilidade especial da classe.
         Retorna uma string com o nome da habilidade aplicada.
@@ -128,16 +127,18 @@ class Personagem(Entidade):
         if self.classe == "Guerreiro":
             efeito_aplicar = EscudoDeGuerra(self)
         elif self.classe == "Mago":
-            efeito_aplicar = TransfusaoArcana()
+            efeito_aplicar = AmplificacaoArcana()
         elif self.classe == "Arqueiro":
             efeito_aplicar = FocoDoCacador()
         elif self.classe == "Paladino":
             efeito_aplicar = BencaoDivina(self)
+        elif self.classe == "Espadachim":
+            efeito_aplicar = Zandatsu()
         else:
             return "Nenhuma habilidade especial implementada para esta classe."
 
         self.aplicar_efeito(efeito_aplicar)
-        return efeito_aplicar.nome
+        return
     
     @staticmethod
     def xp_necessario_para_nivel(nivel: int) -> int:
