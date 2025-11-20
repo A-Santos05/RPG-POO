@@ -1,4 +1,4 @@
-# Python-Mariano
+# RPG-POO
 
 Integrantes do grupo:
 Philipi Oliveira de Camargo Montini
